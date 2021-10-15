@@ -117,7 +117,7 @@ six==1.14.0
 soupsieve==1.9.5
 SpeechRecognition==3.8.1
 SQLAlchemy==1.4.7
-sqlparse==0.4.1
+sqlparse==0.4.2
 stone==3.2.1
 submit50==3.0.3
 systemd-python==234
