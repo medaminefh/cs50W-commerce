@@ -1,7 +1,17 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+<h2>Active Listings</h2>
 
-    TODO
+TODO
+{% if auctions %}
+<ul>
+
+    {% for auction in auctions %}
+    <li>Auction N°{{ auction.id }} </li>
+    <li>{{ auction.title }}</li>
+    {% endfor %}
+
+</ul>
+{% endif %}
 {% endblock %}
