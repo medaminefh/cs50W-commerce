@@ -3,6 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
 from .models import User
 
@@ -61,3 +62,36 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+
+@login_required(login_url="/login")
+def create(req):
+    if req.method == "POST":
+        title = req.POST['title']
+        desc = req.POST['desc']
+        img = req.POST['img']
+        bid = req.POST['bid']
+        categories = req.POST['cat']
+        print(
+            f"title:{title}, desc:{desc}, img:{img}, bid:{bid}, categ:{categories}")
+    return render(req, "auctions/create.html")
+
+
+def inactive(req):
+    return render(req, 'auctions/index.html')
+
+
+def listing(req):
+    return render(req, 'auctions/index.html')
+
+
+def categories(req):
+    return render(req, 'auctions/index.html')
+
+
+def category_listing(req):
+    return render(req, 'auctions/index.html')
+
+
+def watchlist(req):
+    return render(req, 'auctions/index.html')
