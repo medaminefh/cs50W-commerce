@@ -1,17 +1,26 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+{% if message %}
+{{message}}
+{% endif %}
 <h2>Active Listings</h2>
 
-TODO
-{% if auctions %}
-<ul>
+{% if listings %}
+{% for auction in listings %}
+<ul class="card mb-3">
 
-    {% for auction in auctions %}
-    <li>Auction N°{{ auction.id }} </li>
+    <a href="{% url 'listing' auction.id %}">
+        <h2>Auction N°{{ auction.id }} </h2>
+    </a>
     <li>{{ auction.title }}</li>
-    {% endfor %}
+    <li>{{ auction.description }}</li>
+    <li>{{ auction.starting_bid }}$</li>
+    <li>{{ auction.user }}</li>
 
 </ul>
+{% endfor %}
+{% else %}
+<h2>No Auctions Here!</h2>
 {% endif %}
 {% endblock %}

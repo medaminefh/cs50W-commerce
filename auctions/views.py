@@ -5,11 +5,15 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
-from .models import User
+from .models import User, Listing, Watchlist, Bid, Comment
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    listings = Listing.objects.all()
+    print(listings)
+    return render(request, "auctions/index.html", {
+        "listings": listings
+    })
 
 
 def login_view(request):
@@ -72,8 +76,13 @@ def create(req):
         img = req.POST['img']
         bid = req.POST['bid']
         categories = req.POST['cat']
-        print(
-            f"title:{title}, desc:{desc}, img:{img}, bid:{bid}, categ:{categories}")
+        user = req.user
+        newAuction = Listing.objects.create(
+            title=title, description=desc, img_url=img, starting_bid=bid, category=categories, user=user)
+        newAuction.save()
+        return render("auctions/index.html", {
+            "message": "Auction Created Succussfully"
+        })
     return render(req, "auctions/create.html")
 
 
