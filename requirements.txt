@@ -116,7 +116,7 @@ sip==4.19.21
 six==1.14.0
 soupsieve==1.9.5
 SpeechRecognition==3.8.1
-SQLAlchemy==1.4.7
+SQLAlchemy==1.4.25
 sqlparse==0.4.2
 stone==3.2.1
 submit50==3.0.3
