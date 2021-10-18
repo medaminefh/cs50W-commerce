@@ -10,7 +10,6 @@ from .models import User, Listing, Watchlist, Bid, Comment
 
 def index(request):
     listings = Listing.objects.all()
-    print(listings)
     return render(request, "auctions/index.html", {
         "listings": listings
     })
@@ -80,9 +79,7 @@ def create(req):
         newAuction = Listing.objects.create(
             title=title, description=desc, img_url=img, starting_bid=bid, category=categories, user=user)
         newAuction.save()
-        return render("auctions/index.html", {
-            "message": "Auction Created Succussfully"
-        })
+        return HttpResponseRedirect(reverse("index"))
     return render(req, "auctions/create.html")
 
 
@@ -90,8 +87,11 @@ def inactive(req):
     return render(req, 'auctions/index.html')
 
 
-def listing(req):
-    return render(req, 'auctions/index.html')
+def listing(req, id):
+    auction = Listing.objects.get(pk=id)
+    return render(req, 'auctions/auction.html', {
+        "auction": auction
+    })
 
 
 def categories(req):

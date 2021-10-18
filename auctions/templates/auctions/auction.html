@@ -1,0 +1,21 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+{% if message %}
+{{message}}
+{% endif %}
+
+{% if auction %}
+<ul class="card mb-3">
+
+    <h2>Auction N°{{ auction.id }} </h2>
+    <li>{{ auction.title }}</li>
+    <li>{{ auction.description }}</li>
+    <li>{{ auction.starting_bid }}$</li>
+    <li>{{ auction.user }}</li>
+
+</ul>
+{% else %}
+<h2>No Auctions Here!</h2>
+{% endif %}
+{% endblock %}
