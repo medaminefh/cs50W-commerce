@@ -8,7 +8,9 @@
 <h2>Active Listings</h2>
 
 {% for auction in listings %}
-<div class="d-flex align-items-center border mb-3">
+<form class="d-flex align-items-center border mb-3" action="{% url 'listing' auction.id %}" method="post">
+    {% csrf_token %}
+    <p class="text-secondary">Watchlist</p>
     <img src="{{auction.img_url}}" class="w-25 me-5 ms-5" alt="{{auction.title}}">
     <div class="">
         <h5 class=""><a href="{% url 'listing' auction.id %}">{{auction.title}}</a></h5>
@@ -16,7 +18,8 @@
         <p><strong>Price: </strong>${{auction.starting_bid}}</p>
         <p class="text-secondary">Created {{auction.updated_at}}</p>
     </div>
-</div>
+    <button type="submit" class="btn btn-secondary">Remove From Watchlist</button>
+</form>
 {% endfor %}
 {% else %}
 <h2>No Auctions Here!</h2>

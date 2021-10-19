@@ -10,12 +10,16 @@ class User(AbstractUser):
 class Listing(models.Model):
     title = models.CharField(max_length=70)
     description = models.TextField()
-    starting_bid = models.FloatField(validators=[MinValueValidator(1)])
-    img_url = models.URLField(blank=True)
+    starting_bid = models.DecimalField(max_digits=9,
+                                       decimal_places=2, validators=[MinValueValidator(1)])
+    img_url = models.URLField(blank=False,
+                              default="https://images.unsplash.com/photo-1594322436404-5a0526db4d13?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=829&q=80")
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="owner")
     category = models.CharField(blank=True, max_length=60)
     active = models.BooleanField(blank=False, default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     winner = models.ForeignKey(
         User, blank=True, on_delete=models.CASCADE, related_name="new_owner", null=True)
 

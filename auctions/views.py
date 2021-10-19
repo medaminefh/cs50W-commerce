@@ -9,7 +9,7 @@ from .models import User, Listing, Watchlist, Bid, Comment
 
 
 def index(request):
-    listings = Listing.objects.all()
+    listings = Listing.objects.filter(active=True)
     return render(request, "auctions/index.html", {
         "listings": listings
     })
@@ -76,19 +76,33 @@ def create(req):
         bid = req.POST['bid']
         categories = req.POST['cat']
         user = req.user
-        newAuction = Listing.objects.create(
-            title=title, description=desc, img_url=img, starting_bid=bid, category=categories, user=user)
+        if not img:
+            newAuction = Listing.objects.create(
+                title=title, description=desc, starting_bid=bid, category=categories, user=user)
+
+        else:
+            newAuction = Listing.objects.create(
+                title=title, description=desc, img_url=img, starting_bid=bid, category=categories, user=user)
         newAuction.save()
         return HttpResponseRedirect(reverse("index"))
     return render(req, "auctions/create.html")
 
 
 def inactive(req):
-    return render(req, 'auctions/index.html')
+    listings = Listing.objects.filter(active=False)
+    return render(req, 'auctions/index.html', {
+        'listings': listings
+    })
 
 
 def listing(req, id):
     auction = Listing.objects.get(pk=id)
+    if req.method == 'POST':
+        user = req.user
+        add_to_watchlist = Watchlist.objects.create(user=user, listing=auction)
+        add_to_watchlist.save()
+        return HttpResponseRedirect(reverse("index"))
+
     return render(req, 'auctions/auction.html', {
         "auction": auction
     })
@@ -102,5 +116,10 @@ def category_listing(req):
     return render(req, 'auctions/index.html')
 
 
+@login_required(login_url="/login")
 def watchlist(req):
-    return render(req, 'auctions/index.html')
+    listings = Watchlist.objects.filter(user=req.user)
+    print(listings)
+    return render(req, 'auctions/watchlist.html', {
+        'listings': listings
+    })

@@ -6,15 +6,17 @@
 {% endif %}
 
 {% if auction %}
-<ul class="card mb-3">
-
-    <h2>Auction N°{{ auction.id }} </h2>
-    <li>{{ auction.title }}</li>
-    <li>{{ auction.description }}</li>
-    <li>{{ auction.starting_bid }}$</li>
-    <li>{{ auction.user }}</li>
-
-</ul>
+<form class="form card mb-3" action="{% url 'listing' auction.id %}" method="post">
+    {% csrf_token %}
+    <h2 class="card-title">{{auction.title}}</h2>
+    <img src="{{auction.img_url}}" class="card-img-top w-25" alt="{{auction.title}}">
+    <div class="card-body">
+        <p class="card-text">{{auction.description}}</p>
+        <p><strong>Price: $</strong>{{ auction.starting_bid }}</p>
+        <button class="btn btn-primary">Add to watchlist</button>
+    </div>
+    <div class="card-footer text-secondary">Created by {{auction.user}}</div>
+</form>
 {% else %}
 <h2>No Auctions Here!</h2>
 {% endif %}
