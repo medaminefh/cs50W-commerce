@@ -45,7 +45,7 @@ googleapis-common-protos==1.53.0
 gpg===1.13.1-unknown
 greenlet==1.0.0
 html5lib==1.0.1
-httplib2==0.19.1
+httplib2==0.20.1
 idna==2.8
 isort==5.6.4
 itsdangerous==1.1.0
