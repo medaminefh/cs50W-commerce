@@ -4,7 +4,7 @@ asgiref==3.3.4
 astroid==2.4.2
 attrs==20.3.0
 autopep8==1.5.4
-bcrypt==3.1.7
+bcrypt==3.2.0
 beautifulsoup4==4.10.0
 blinker==1.4
 Brlapi==0.7.0
