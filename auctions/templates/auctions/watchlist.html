@@ -5,18 +5,17 @@
 {{message}}
 {% endif %}
 {% if listings %}
-<h2>Active Listings</h2>
 
+<p class="text-secondary">Watchlist</p>
 {% for auction in listings %}
-<form class="d-flex align-items-center border mb-3" action="{% url 'listing' auction.id %}" method="post">
+<form class="d-flex align-items-center border mb-3" action="{% url 'listing' auction.listing.id %}" method="post">
     {% csrf_token %}
-    <p class="text-secondary">Watchlist</p>
-    <img src="{{auction.img_url}}" class="w-25 me-5 ms-5" alt="{{auction.title}}">
+    <img src="{{auction.listing.img_url}}" class="w-25 me-5 ms-5" alt="{{auction.listing.title}}">
     <div class="">
-        <h5 class=""><a href="{% url 'listing' auction.id %}">{{auction.title}}</a></h5>
-        <p class="">{{auction.description}}</p>
-        <p><strong>Price: </strong>${{auction.starting_bid}}</p>
-        <p class="text-secondary">Created {{auction.updated_at}}</p>
+        <h5 class=""><a href="{% url 'listing' auction.listing.id %}">{{auction.listing.title}}</a></h5>
+        <p class="">{{auction.listing.description}}</p>
+        <p><strong>Price: </strong>${{auction.listing.starting_bid}}</p>
+        <p class="text-secondary">Created {{auction.listing.updated_at}}</p>
     </div>
     <button type="submit" class="btn btn-secondary">Remove From Watchlist</button>
 </form>

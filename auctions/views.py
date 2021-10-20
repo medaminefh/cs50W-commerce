@@ -1,3 +1,4 @@
+from typing import NewType
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -76,13 +77,9 @@ def create(req):
         bid = req.POST['bid']
         categories = req.POST['cat']
         user = req.user
-        if not img:
-            newAuction = Listing.objects.create(
-                title=title, description=desc, starting_bid=bid, category=categories, user=user)
 
-        else:
-            newAuction = Listing.objects.create(
-                title=title, description=desc, img_url=img, starting_bid=bid, category=categories, user=user)
+        newAuction = Listing.objects.create(
+            title=title, description=desc, img_url=img, starting_bid=bid, category=categories, user=user)
         newAuction.save()
         return HttpResponseRedirect(reverse("index"))
     return render(req, "auctions/create.html")
@@ -97,14 +94,51 @@ def inactive(req):
 
 def listing(req, id):
     auction = Listing.objects.get(pk=id)
+    user = req.user
+    bids = Bid.objects.filter(listing=auction)
+    comments = Comment.objects.filter(listing=auction)
+
+    highest_bid = auction.starting_bid
+
+    if bids is not None:
+        for bid in bids:
+            if bid > highest_bid:
+                highest_bid = bid
+
+    exist_in_watch_list = Watchlist.objects.first()
+
     if req.method == 'POST':
-        user = req.user
-        add_to_watchlist = Watchlist.objects.create(user=user, listing=auction)
-        add_to_watchlist.save()
-        return HttpResponseRedirect(reverse("index"))
+        return
+        bid = req.POST["bid"] or None
+        comment = req.POST["comment"] or None
+
+        try:
+            bid = int(bid)
+        except:
+            bid = None
+
+        if comment is not None:
+            new_comment = Comment.objects.create(
+                content=comment, user=user, listing=auction)
+            new_comment.save()
+            return HttpResponseRedirect(reverse('listing', args=[id]))
+
+        if bid is not None:
+            if bid < highest_bid:
+                return HttpResponseRedirect(reverse('listing', args=[id]))
+
+            new_bid = Bid.objects.create(
+                value=int(bid), user=user, listing=auction)
+            new_bid.save()
+
+            delete_old_bids = Bid.objects.filter(
+                listing=auction).exclude(value=bid)
+            delete_old_bids.delete()
+
+            return HttpResponseRedirect(reverse('listing', args=[id]))
 
     return render(req, 'auctions/auction.html', {
-        "auction": auction
+        "auction": auction, "user": user, "comments": comments, "highest_bid": highest_bid
     })
 
 
@@ -119,7 +153,6 @@ def category_listing(req):
 @login_required(login_url="/login")
 def watchlist(req):
     listings = Watchlist.objects.filter(user=req.user)
-    print(listings)
     return render(req, 'auctions/watchlist.html', {
         'listings': listings
     })

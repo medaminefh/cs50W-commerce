@@ -13,7 +13,9 @@
     <div class="card-body">
         <p class="card-text">{{auction.description}}</p>
         <p><strong>Price: $</strong>{{ auction.starting_bid }}</p>
+        {% if user %}
         <button class="btn btn-primary">Add to watchlist</button>
+        {% endif %}
     </div>
     <div class="card-footer text-secondary">Created by {{auction.user}}</div>
 </form>

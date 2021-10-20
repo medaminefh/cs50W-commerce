@@ -12,8 +12,7 @@ class Listing(models.Model):
     description = models.TextField()
     starting_bid = models.DecimalField(max_digits=9,
                                        decimal_places=2, validators=[MinValueValidator(1)])
-    img_url = models.URLField(blank=False,
-                              default="https://images.unsplash.com/photo-1594322436404-5a0526db4d13?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=829&q=80")
+    img_url = models.URLField(blank=True)
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="owner")
     category = models.CharField(blank=True, max_length=60)
