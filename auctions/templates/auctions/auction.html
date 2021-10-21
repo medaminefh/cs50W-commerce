@@ -23,13 +23,11 @@
     <p class="text-secondary"><strong>Sarted with: $</strong>{{ auction.starting_bid }}</p>
     {% endif %}
     {% if user %}
-    <form action="{% url 'toggle_watchlist' auction.id %}">
-        {% csrf_token %}
-        {% if in_watchlist %}
-        <button class="btn btn-secondary">Remove From watchlist</button>
-        {% else %}
-        <button class="btn btn-primary">Add To watchlist</button>
-        {% endif %}
+    {% if in_watchlist %}
+    <a href="{% url 'toggle_watchlist' auction.id %}" class="btn btn-secondary">Remove From watchlist</a>
+    {% else %}
+    <a href="{% url 'toggle_watchlist' auction.id %}" class="btn btn-primary">Add To watchlist</a>
+    {% endif %}
     </form>
     {% if comments %}
     <div class="mt-5">

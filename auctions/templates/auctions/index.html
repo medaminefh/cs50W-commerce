@@ -9,7 +9,9 @@
 
 {% for auction in listings %}
 <div class="d-flex align-items-center border mb-3">
+    {% if auction.img_url %}
     <img src="{{auction.img_url}}" class="w-25 me-5 ms-5" alt="{{auction.title}}">
+    {% endif %}
     <div class="">
         <h5 class=""><a href="{% url 'listing' auction.id %}">{{auction.title}}</a></h5>
         <p class="">{{auction.description}}</p>

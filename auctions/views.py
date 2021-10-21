@@ -187,4 +187,20 @@ def watchlist(req):
 
 @login_required(login_url="/")
 def toggle_watchlist(req, id):
-    return HttpResponseRedirect(reverse("index"))
+    user = req.user
+    listing = Listing.objects.get(pk=id)
+
+    watchlist = ""
+    try:
+        watchlist = Watchlist.objects.get(user=user, listing=listing)
+    except:
+        watchlist = None
+
+    if watchlist is None:
+        new_watchlist = Watchlist.objects.create(user=user,
+                                                 listing=listing)
+        new_watchlist.save()
+        return HttpResponseRedirect(reverse("watchlist"))
+
+    watchlist.delete()
+    return HttpResponseRedirect(reverse("watchlist"))

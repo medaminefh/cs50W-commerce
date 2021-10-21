@@ -8,17 +8,18 @@
 
 <p class="text-secondary">Watchlist</p>
 {% for auction in listings %}
-<form class="d-flex align-items-center border mb-3" action="{% url 'listing' auction.listing.id %}" method="post">
-    {% csrf_token %}
+<div class="d-flex align-items-center border mb-3">
+    {% if auction.listing.img_url %}
     <img src="{{auction.listing.img_url}}" class="w-25 me-5 ms-5" alt="{{auction.listing.title}}">
+    {% endif %}
     <div class="">
         <h5 class=""><a href="{% url 'listing' auction.listing.id %}">{{auction.listing.title}}</a></h5>
         <p class="">{{auction.listing.description}}</p>
         <p><strong>Price: </strong>${{auction.listing.starting_bid}}</p>
         <p class="text-secondary">Created {{auction.listing.updated_at}}</p>
     </div>
-    <button type="submit" class="btn btn-secondary">Remove From Watchlist</button>
-</form>
+    <a href="{% url 'toggle_watchlist' auction.listing.id %}" class="btn btn-secondary">Remove From Watchlist</a>
+</div>
 {% endfor %}
 {% else %}
 <h2>No Auctions Here!</h2>
