@@ -27,7 +27,8 @@ class Listing(models.Model):
 
 
 class Bid(models.Model):
-    value = models.FloatField(validators=[MinValueValidator(1)])
+    value = models.DecimalField(max_digits=9,
+                                decimal_places=2, validators=[MinValueValidator(1)])
     listing = models.ForeignKey(
         Listing, verbose_name="price", on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

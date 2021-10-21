@@ -5,20 +5,56 @@
 {{message}}
 {% endif %}
 
+{% if auction.user == user %}
+<p>You are The owner of this Auction!</p>
+{% endif %}
 {% if auction %}
-<form class="form card mb-3" action="{% url 'listing' auction.id %}" method="post">
-    {% csrf_token %}
-    <h2 class="card-title">{{auction.title}}</h2>
-    <img src="{{auction.img_url}}" class="card-img-top w-25" alt="{{auction.title}}">
-    <div class="card-body">
-        <p class="card-text">{{auction.description}}</p>
-        <p><strong>Price: $</strong>{{ auction.starting_bid }}</p>
-        {% if user %}
-        <button class="btn btn-primary">Add to watchlist</button>
+
+<h2 class="card-title">{{auction.title}}</h2>
+
+{% if auction.img_url %}
+<img src="{{auction.img_url}}" class="card-img-top w-25" alt="{{auction.title}}">
+{% endif %}
+
+<div class="card-body">
+    <p class="card-text">{{auction.description}}</p>
+    <p><strong>Price: $</strong>{{ highest_bid }}</p>
+    {% if auction.starting_bid != highest_bid %}
+    <p class="text-secondary"><strong>Sarted with: $</strong>{{ auction.starting_bid }}</p>
+    {% endif %}
+    {% if user %}
+    <form action="{% url 'toggle_watchlist' auction.id %}">
+        {% csrf_token %}
+        {% if in_watchlist %}
+        <button class="btn btn-secondary">Remove From watchlist</button>
+        {% else %}
+        <button class="btn btn-primary">Add To watchlist</button>
         {% endif %}
+    </form>
+    {% if comments %}
+    <div class="mt-5">
+
+        {% for comment in comments %}
+        <p><strong class="text-secondary">{{comment.user}}:</strong>
+            <span class="whitespace-pre-wrap"> {{comment.content}} </span>
+        </p>
+        {% endfor %}
     </div>
-    <div class="card-footer text-secondary">Created by {{auction.user}}</div>
-</form>
+    {% endif %}
+    <form class="form mb-3" action="{% url 'listing' auction.id %}" method="post">
+        {% csrf_token %}
+        <label class="form-label me-5">Make a bid</label>
+        <input type="number" min="{{highest_bid}}" placeholder="{{highest_bid}}" class="form-control" name="bid">
+
+        <label class="form-label me-5">Make a comment</label>
+        <textarea class="form-control" name="comment"></textarea>
+
+        <button class="btn btn-primary" type="submit"> Submit </button>
+
+    </form>
+    {% endif %}
+</div>
+<div class="card-footer text-secondary">Created by {{auction.user}}</div>
 {% else %}
 <h2>No Auctions Here!</h2>
 {% endif %}
