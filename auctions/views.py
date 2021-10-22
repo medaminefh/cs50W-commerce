@@ -11,7 +11,7 @@ from .models import User, Listing, Watchlist, Bid, Comment
 
 def index(request):
     listings = Listing.objects.filter(active=True)
-    bids = Bid.objects.all()
+    bids = Bid.objects.exclude(winner=True)
     return render(request, "auctions/index.html", {
         "listings": listings,
         "bids": bids,
@@ -91,15 +91,19 @@ def create(req):
 @login_required(login_url="/")
 def close(req, id):
     listing = Listing.objects.get(pk=id)
+    watchlist = Watchlist.objects.filter(listing=listing)
+    watchlist.delete()
     bid = None
     try:
         bid = Bid.objects.get(listing=listing)
         bid.winner = True
         bid.save()
     except:
+        listing.winner = req.user
         bid = None
 
-    listing.winner = req.user
+    if bid is not None:
+        listing.winner = bid.user
     listing.active = False
 
     listing.save()
@@ -147,6 +151,7 @@ def listing(req, id):
     except:
         exist_in_watch_list = None
 
+    print(bids)
     if req.method == 'POST':
 
         bid = req.POST["bid"] or None
@@ -193,6 +198,10 @@ def listing(req, id):
                     delete_old_bids.delete()
 
                     return HttpResponseRedirect(reverse('listing', args=[id]))
+                else:
+                    return render(req, "auctions/err.html", {
+                        "error": "There is something Wrong You did!"
+                    })
         return add_comment_or_bid(comment, bid)
 
     return render(req, 'auctions/auction.html', {
@@ -201,11 +210,22 @@ def listing(req, id):
 
 
 def categories(req):
-    return render(req, 'auctions/index.html')
+    listings = Listing.objects.all()
+    categories = []
+
+    for auction in listings:
+        if auction.category not in categories and auction.category:
+            categories.append(auction.category)
+    print(categories)
+    return render(req, 'auctions/categories.html', {
+        'categories': categories
+    })
 
 
-def category_listing(req):
-    return render(req, 'auctions/index.html')
+def category_listing(req, category):
+    listings = Listing.objects.filter(category=category)
+    bids = Bid.objects.all()
+    return render(req, "auctions/index.html", {"listings": listings, 'bids': bids, "header": f"List of All {category}"})
 
 
 @login_required(login_url="/login")

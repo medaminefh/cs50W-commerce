@@ -8,8 +8,12 @@
 {% if auction.user == user and auction.active %}
 <a href="{% url 'close' auction.id %}" class="btn btn-danger">Close</a>
 {% endif %}
-{% if winner %}
+{% if auction.winner %}
+{% if auction.winner == user %}
+You're The Winner of This Auction
+{% elif auction.winner != user %}
 The Winner of this Auction is <strong>{{winner}}</strong>
+{% endif %}
 {% endif %}
 {% if auction %}
 
@@ -25,7 +29,7 @@ The Winner of this Auction is <strong>{{winner}}</strong>
     {% if auction.starting_bid != highest_bid %}
     <p class="text-secondary"><strong>Sarted with: $</strong>{{ auction.starting_bid }}</p>
     {% endif %}
-    {% if user.is_authenticated and not winner %}
+    {% if user.is_authenticated and auction.active %}
     {% if in_watchlist %}
     <a href="{% url 'toggle_watchlist' auction.id %}" class="btn btn-secondary">Remove From watchlist</a>
     {% else %}
