@@ -12,6 +12,7 @@ urlpatterns = [
     path("watchlist", views.watchlist, name="watchlist"),
     path("watchlist/<int:id>", views.toggle_watchlist, name="toggle_watchlist"),
     path("categories", views.categories, name="categories"),
+    path("close/<int:id>", views.close, name="close"),
     path("inactive", views.inactive, name="inactive"),
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register")

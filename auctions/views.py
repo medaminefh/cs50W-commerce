@@ -14,7 +14,8 @@ def index(request):
     bids = Bid.objects.all()
     return render(request, "auctions/index.html", {
         "listings": listings,
-        "bids": bids
+        "bids": bids,
+        'header': "Active Listings"
     })
 
 
@@ -87,20 +88,51 @@ def create(req):
     return render(req, "auctions/create.html")
 
 
+@login_required(login_url="/")
+def close(req, id):
+    listing = Listing.objects.get(pk=id)
+    bid = None
+    try:
+        bid = Bid.objects.get(listing=listing)
+        bid.winner = True
+        bid.save()
+    except:
+        bid = None
+
+    listing.winner = req.user
+    listing.active = False
+
+    listing.save()
+    return HttpResponseRedirect(reverse("inactive"))
+
+
 def inactive(req):
     listings = Listing.objects.filter(active=False)
     return render(req, 'auctions/index.html', {
-        'listings': listings
+        'listings': listings,
+        'header': "Inactive Listings"
     })
 
 
 def listing(req, id):
     auction = Listing.objects.get(pk=id)
     user = req.user
-    bids = Bid.objects.filter(listing=auction)
+
+    bids = None
+    try:
+        bids = Bid.objects.filter(listing=auction)
+    except:
+        bids = None
+
     comments = Comment.objects.filter(listing=auction)
 
     highest_bid = auction.starting_bid
+    winner_bid = auction.winner
+
+    try:
+        winner_bid = Bid.objects.get(winner=True).user
+    except:
+        winner_bid = auction.winner
 
     if bids is not None:
         for bid in bids:
@@ -110,7 +142,6 @@ def listing(req, id):
     exist_in_watch_list = ""
 
     try:
-
         exist_in_watch_list = Watchlist.objects.get(
             listing=auction, user=user)
     except:
@@ -165,7 +196,7 @@ def listing(req, id):
         return add_comment_or_bid(comment, bid)
 
     return render(req, 'auctions/auction.html', {
-        "auction": auction, "user": user, "comments": comments, "highest_bid": highest_bid, "in_watchlist": exist_in_watch_list
+        "auction": auction, "user": user, "comments": comments, "highest_bid": highest_bid, "in_watchlist": exist_in_watch_list, "winner": winner_bid
     })
 
 
