@@ -25,6 +25,7 @@ The Winner of this Auction is <strong>{{winner}}</strong>
 
 <div class="card-body">
     <p class="card-text">{{auction.description}}</p>
+    <p><strong>Category: </strong>{{auction.category}} </p>
     <p><strong>Price: $</strong>{{ highest_bid }}</p>
     {% if auction.starting_bid != highest_bid %}
     <p class="text-secondary"><strong>Sarted with: $</strong>{{ auction.starting_bid }}</p>
@@ -35,29 +36,30 @@ The Winner of this Auction is <strong>{{winner}}</strong>
     {% else %}
     <a href="{% url 'toggle_watchlist' auction.id %}" class="btn btn-primary">Add To watchlist</a>
     {% endif %}
-    </form>
-    {% if comments %}
-    <div class="mt-5">
+</div>
+{% if comments %}
+<h3 class="mt-3">Comments:</h3>
+<div class="mt-2">
 
-        {% for comment in comments %}
-        <p><strong class="text-secondary">{{comment.user}}:</strong>
-            <span class="whitespace-pre-wrap"> {{comment.content}} </span>
-        </p>
-        {% endfor %}
-    </div>
-    {% endif %}
-    <form class="form mb-3" action="{% url 'listing' auction.id %}" method="post">
-        {% csrf_token %}
-        <label class="form-label me-5">Make a bid</label>
-        <input type="number" min="{{highest_bid}}" placeholder="{{highest_bid}}" class="form-control" name="bid">
+    {% for comment in comments %}
+    <p><strong class="text-secondary">{{comment.user}}:</strong>
+        <span class="whitespace-pre-wrap"> {{comment.content}} </span>
+    </p>
+    {% endfor %}
+</div>
+{% endif %}
+<form class="form mb-3 border p-2" action="{% url 'listing' auction.id %}" method="post">
+    {% csrf_token %}
+    <label class="form-label me-5">Make a bid</label>
+    <input type="number" min="{{highest_bid}}" placeholder="{{highest_bid}}" class="form-control" name="bid">
 
-        <label class="form-label me-5">Make a comment</label>
-        <textarea class="form-control" name="comment"></textarea>
+    <label class="form-label me-5">Make a comment</label>
+    <textarea class="form-control" name="comment"></textarea>
 
-        <button class="btn btn-primary" type="submit"> Submit </button>
+    <button class="btn btn-primary mt-2" type="submit"> Submit </button>
 
-    </form>
-    {% endif %}
+</form>
+{% endif %}
 </div>
 <div class="card-footer text-secondary">Created by {{auction.user}}</div>
 {% else %}

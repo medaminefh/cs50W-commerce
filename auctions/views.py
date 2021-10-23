@@ -1,7 +1,6 @@
-from typing import NewType
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -210,7 +209,7 @@ def listing(req, id):
 
 
 def categories(req):
-    listings = Listing.objects.all()
+    listings = Listing.objects.exclude(active=False)
     categories = []
 
     for auction in listings:
@@ -223,8 +222,8 @@ def categories(req):
 
 
 def category_listing(req, category):
-    listings = Listing.objects.filter(category=category)
-    bids = Bid.objects.all()
+    listings = Listing.objects.filter(active=True, category=category)
+    bids = Bid.objects.exclude(winner=True)
     return render(req, "auctions/index.html", {"listings": listings, 'bids': bids, "header": f"List of All {category}"})
 
 
