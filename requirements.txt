@@ -58,7 +58,7 @@ launchpadlib==1.10.13
 lazr.restfulclient==0.14.2
 lazr.uri==1.0.6
 lazy-object-proxy==1.4.3
-lib50==2.0.9
+lib50==3.0.3
 lockfile==0.12.2
 louis==3.12.0
 lxml==4.5.0
