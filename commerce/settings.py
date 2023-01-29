@@ -25,7 +25,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', default='6ps8j!crjgrxt34cqbqn7x&b3y%(f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = "RENDER" not in os.environ
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "commerce-CS50.onrender.com"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "commerce-cs50.onrender.com"]
 
 
 # Application definition
